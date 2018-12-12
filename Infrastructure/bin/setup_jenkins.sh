@@ -20,15 +20,22 @@ oc new-app jenkins-persistent --param ENABLE_OAUTH=true --param MEMORY_LIMIT=2Gi
 # TBD
   oc new-build  -D $'FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11\n
           USER root\nRUN yum -y install skopeo && yum clean all\n
-          USER akshay.g-capgemini.com' --name=jenkins-agent-appdev -n 7a9c-jenkins1
+          USER akshay.g-capgemini.com' --name=jenkins-agent-appdev -n ${GUID}-jenkins
 
 # Create pipeline build config pointing to the ${REPO} with contextDir `openshift-tasks`
 # TBD
 
 
-           oc new-app redhat-openjdk18-openshift~${REPO} --context-dir=openshift-tasks/ --build-env='REPO=https://github.com/redhat-gpte-devopsautomation/advdev_homework_template.git'
---build-env='GUID=9e16' --build-env='CLUSTER=na311.openshift.opentlc.com'
+           oc new-app redhat-openjdk18-openshift~${REPO} --context-dir=app-1/ --build-env=REPO=${GUID}
+--build-env=GUID=${GUID} --build-env=CLUSTER=${CLUSTER}
 
+
+           oc new-app redhat-openjdk18-openshift~${REPO} --context-dir=app-2/ --build-env=REPO=${GUID}
+--build-env=GUID=${GUID} --build-env=CLUSTER=${CLUSTER}
+
+
+           oc new-app redhat-openjdk18-openshift~${REPO} --context-dir=app-3/ --build-env=REPO=${GUID}
+--build-env=GUID=${GUID} --build-env=CLUSTER=${CLUSTER}
 
 # Make sure that Jenkins is fully up and running before proceeding!
 while : ; do
